@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Ubícate! UPN</title>
+<style>
+:root { color-scheme: light dark; --navy:#142746; --blue:#2855d9; --cyan:#5dd8d0; --ink:light-dark(#17243b,#f1f5ff); --muted:light-dark(#5d6a80,#b8c4d9); --surface:light-dark(#ffffff,#17243b); --soft:light-dark(#f2f6ff,#202f4b); --line:light-dark(#dfe7f5,#344662); --canvas:light-dark(#f8faff,#101b2e); }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ink); background:var(--canvas); }
+#app { min-height:100vh; width:100%; background:var(--canvas); border-radius:0; overflow:hidden; }
+.container { width:min(1120px,calc(100% - 40px)); margin:0 auto; }
+header { padding:20px 0; background:var(--surface); border-bottom:1px solid var(--line); }
+.nav { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.brand { display:flex; align-items:center; gap:11px; font-weight:850; letter-spacing:-.5px; font-size:1.15rem; color:var(--ink); text-decoration:none; }
+.brand-icon { width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,var(--blue),#5577ff);color:#fff;font-size:1.35rem;box-shadow:0 8px 20px #2855d933; }
+.brand small { display:block; font-size:.68rem; font-weight:650; letter-spacing:1.5px; color:var(--muted); margin-top:2px; }
+.nav-links { display:flex; align-items:center; gap:25px; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:.92rem; font-weight:650; }
+.nav-links a:hover { color:var(--blue); }
+.btn { display:inline-flex; justify-content:center; align-items:center; gap:9px; border:0; border-radius:13px; padding:13px 19px; font-size:.94rem; font-weight:750; cursor:pointer; text-decoration:none; transition:transform .18s,box-shadow .18s; }
+.btn:hover { transform:translateY(-2px); }
+.btn-primary { background:var(--blue); color:white; box-shadow:0 10px 22px #2855d933; }
+.btn-secondary { background:var(--surface); border:1px solid var(--line); color:var(--ink); }
+.hero { padding:76px 0 68px; background:radial-gradient(ellipse at 80% 30%,light-dark(#dce8ff,#263e66) 0%,transparent 42%),var(--canvas); }
+.hero-grid { display:grid; grid-template-columns:1.04fr .96fr; gap:55px; align-items:center; }
+.eyebrow { display:inline-flex; align-items:center; gap:8px; border:1px solid light-dark(#cddaff,#3a5075); background:light-dark(#edf2ff,#1b2b46); color:light-dark(#284fc7,#aebfff); padding:8px 12px; border-radius:999px; font-size:.78rem; font-weight:800; letter-spacing:.35px; }
+.pulse { width:8px;height:8px;border-radius:50%;background:#29b9a7;box-shadow:0 0 0 4px #29b9a71c; }
+h1 { margin:22px 0 18px; font-size:clamp(2.7rem,5.4vw,4.6rem); line-height:1.03; letter-spacing:-3px; max-width:650px; }
+.gradient-text { background:linear-gradient(100deg,var(--blue),#16a9a5); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hero-copy { color:var(--muted); font-size:1.12rem; line-height:1.75; max-width:560px; margin:0 0 27px; }
+.hero-actions { display:flex; gap:12px; flex-wrap:wrap; }
+.trust-row { display:flex; gap:20px; margin-top:27px; flex-wrap:wrap; color:var(--muted); font-size:.82rem; }
+.trust-row span { display:flex; align-items:center; gap:7px; }
+.hero-art { min-height:420px; position:relative; display:grid; place-items:center; }
+.orbit { position:absolute; width:340px;height:340px;border-radius:50%;border:1px dashed light-dark(#b9c9ed,#405777); }
+.orbit:before,.orbit:after { content:""; position:absolute; border:1px solid light-dark(#d5e0f5,#304866); border-radius:50%; inset:28px; }
+.orbit:after { inset:65px; }
+.phone { width:248px; height:390px; border-radius:34px; padding:12px; background:light-dark(#fff,#dfe7f5); box-shadow:0 30px 70px #13264b30; position:relative; z-index:2; transform:rotate(-4deg); }
+.phone-screen { height:100%; border-radius:24px; background:linear-gradient(155deg,#edf3ff,#dceaff); padding:18px 14px; color:#182a4b; overflow:hidden; }
+.phone-top { display:flex; justify-content:space-between; align-items:center; font-size:.72rem; font-weight:850; }
+.phone-title { margin:24px 0 12px; font-size:1.2rem; font-weight:850; }
+.searchbox { padding:10px 11px; border-radius:11px; background:white; color:#6a7892; font-size:.72rem; box-shadow:0 4px 14px #233b6810; }
+.mini-map { height:170px; margin-top:13px; border-radius:14px; position:relative; overflow:hidden; background:#e1f0e9; background-image:linear-gradient(35deg,transparent 46%,#fff 47%,#fff 51%,transparent 52%),linear-gradient(145deg,transparent 41%,#fff 42%,#fff 47%,transparent 48%),linear-gradient(90deg,transparent 47%,#fff 48%,#fff 51%,transparent 52%); }
+.building { position:absolute; background:#b7d0ff; border:2px solid #fff; border-radius:5px; }
+.b1 { left:12px;top:14px;width:62px;height:42px; }.b2 { right:15px;top:20px;width:72px;height:52px; }.b3 { left:25px;bottom:18px;width:74px;height:42px; }.b4 { right:22px;bottom:20px;width:54px;height:50px; }
+.route { position:absolute; left:72px;top:56px;width:77px;height:55px;border-right:4px solid #315fe5;border-bottom:4px solid #315fe5;border-radius:0 0 24px 0; transform:rotate(-9deg); }
+.pin { position:absolute; left:131px;top:94px; width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#2855d9;border:3px solid white;box-shadow:0 4px 10px #2855d955; }
+.phone-bottom { margin-top:12px; background:white; border-radius:13px; padding:11px; display:flex;align-items:center;gap:9px;box-shadow:0 4px 12px #233b6810; }
+.destination-icon { background:#e4edff;color:#2855d9;border-radius:9px;width:32px;height:32px;display:grid;place-items:center; }
+.phone-bottom strong { display:block;font-size:.7rem; }.phone-bottom small { color:#71809a;font-size:.61rem; }
+.float-card { position:absolute; z-index:3; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:13px 15px; box-shadow:0 14px 35px #13264b18; display:flex;align-items:center;gap:10px; }
+.float-card strong { display:block;font-size:.84rem; }.float-card small { display:block;color:var(--muted);font-size:.72rem;margin-top:2px; }
+.float-one { top:65px;right:-4px; }.float-two { bottom:51px;left:-4px; }
+.float-icon { width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:light-dark(#e7efff,#2b4168);font-size:1.15rem; }
+section { padding:74px 0; }
+.section-head { text-align:center; max-width:690px; margin:0 auto 38px; }
+.kicker { color:var(--blue); font-size:.78rem; font-weight:850; letter-spacing:1.8px; text-transform:uppercase; }
+h2 { font-size:clamp(2rem,3.5vw,2.8rem); line-height:1.15; letter-spacing:-1.3px; margin:13px 0; }
+.section-head p { color:var(--muted); line-height:1.7; margin:0; }
+.features { background:var(--surface); }
+.feature-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
+.feature-card { border:1px solid var(--line);border-radius:20px;padding:25px;background:var(--surface); }
+.feature-icon { width:48px;height:48px;border-radius:15px;background:light-dark(#edf2ff,#243a5c);display:grid;place-items:center;font-size:1.4rem;margin-bottom:19px; }
+.feature-card h3 { margin:0 0 10px;font-size:1.08rem; }.feature-card p { margin:0;color:var(--muted);line-height:1.65;font-size:.93rem; }
+.demo { background:var(--soft); }
+.demo-grid { display:grid;grid-template-columns:.8fr 1.2fr;gap:42px;align-items:center; }
+.demo-copy p { color:var(--muted);line-height:1.75; }
+.demo-panel { background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:23px;box-shadow:0 18px 45px #12274b0d; }
+.demo-panel label { display:block;font-size:.85rem;font-weight:750;margin-bottom:9px; }
+.search-row { display:flex;gap:9px; }
+.search-row input { flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:13px 14px;border-radius:12px;font:inherit; }
+.search-row button { border-radius:12px;border:0;background:var(--blue);color:#fff;font-weight:800;padding:0 17px;cursor:pointer; }
+.place-list { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px; }
+.place { border:1px solid var(--line);background:var(--surface);border-radius:13px;padding:13px;display:flex;gap:10px;align-items:center;text-align:left;color:var(--ink);cursor:pointer; }
+.place:hover,.place.active { border-color:var(--blue);background:light-dark(#f0f4ff,#223758); }
+.place .picon { width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--soft);font-size:1.1rem; }
+.place strong { display:block;font-size:.82rem; }.place small { color:var(--muted);font-size:.7rem;display:block;margin-top:3px; }
+.route-result { margin-top:14px;border-radius:13px;background:light-dark(#eaf8f5,#183c43);padding:13px 15px;color:light-dark(#126d62,#8ee4d8);font-size:.84rem;line-height:1.5;min-height:48px; }
+.steps-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:steps; }
+.step { padding:23px;border-radius:18px;background:var(--surface);border:1px solid var(--line); }
+.step-num { width:38px;height:38px;border-radius:12px;background:var(--blue);color:white;display:grid;place-items:center;font-weight:850;margin-bottom:16px; }
+.step h3 { margin:0 0 9px;font-size:1.03rem; }.step p { margin:0;color:var(--muted);font-size:.9rem;line-height:1.65; }
+.cta { padding:65px 0; background:linear-gradient(120deg,#1b3b89,#2855d9 58%,#138f9b);color:white; }
+.cta-inner { display:flex;align-items:center;justify-content:space-between;gap:30px; }.cta h2 { margin:0 0 10px; }.cta p { color:#e0e9ff;margin:0;line-height:1.6; }.cta .btn { background:white;color:#2146b5;white-space:nowrap; }
+footer { padding:27px 0;background:var(--surface);border-top:1px solid var(--line); }.footer-inner { display:flex;justify-content:space-between;align-items:center;gap:18px;color:var(--muted);font-size:.82rem; }.footer-brand { color:var(--ink);font-weight:850; }
+.modal-backdrop { display:none;position:fixed;inset:0;z-index:20;background:#08152bd9;align-items:center;justify-content:center;padding:20px; }.modal-backdrop.open { display:flex; }.modal { max-width:470px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:27px;box-shadow:0 25px 80px #0004; }.modal h3 { margin:0 0 10px;font-size:1.4rem; }.modal p { color:var(--muted);line-height:1.65; }.modal input { width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink);font:inherit;margin:5px 0 13px; }.modal-actions { display:flex;gap:10px;justify-content:flex-end; }
+@media(max-width:800px) { .nav-links { display:none; }.hero { padding:52px 0; }.hero-grid,.demo-grid { grid-template-columns:1fr;gap:25px; }.hero-art { min-height:390px; }.feature-grid,.steps-grid { grid-template-columns:1fr; }.cta-inner { align-items:flex-start;flex-direction:column; }.float-one { right:0; }.float-two { left:0; } }
+@media(max-width:480px) { .container { width:min(100% - 28px,1120px); } h1 { letter-spacing:-2px; }.hero-art { transform:scale(.92);margin:-12px -15px; }.place-list { grid-template-columns:1fr; }.search-row { flex-direction:column; }.search-row button { padding:13px; }.footer-inner { flex-direction:column;align-items:flex-start; } }
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="container nav">
+<a class="brand" href="#inicio"><span class="brand-icon">⌖</span><span>¡Ubícate! UPN<small>TU CAMPUS, MÁS CERCA</small></span></a>
+<nav class="nav-links" aria-label="Navegación"><a href="#beneficios">Beneficios</a><a href="#demo">Cómo funciona</a><a href="#pasos">Nuestra propuesta</a></nav>
+<button class="btn btn-primary" data-open-modal>Quiero conocer más <span>↗</span></button>
+</div></header>
+<main>
+<section class="hero" id="inicio"><div class="container hero-grid">
+<div><div class="eyebrow"><span class="pulse"></span> Una propuesta para la comunidad UPN</div>
+<h1>Encuentra tu camino.<br><span class="gradient-text">Aprovecha tu tiempo.</span></h1>
+<p class="hero-copy">¿Aún te pierdes buscando un aula o una oficina? ¡Ubícate! UPN es una propuesta de orientación universitaria con mapas interactivos para ayudarte a encontrar los espacios del campus de forma más fácil.</p>
+<div class="hero-actions"><a class="btn btn-primary" href="#demo">Explorar la propuesta <span>→</span></a><button class="btn btn-secondary" data-open-modal>Quiero recibir novedades</button></div>
+<div class="trust-row"><span>✓ Pensado para estudiantes</span><span>✓ Orientación más sencilla</span></div></div>
+<div class="hero-art" aria-label="Ilustración de una aplicación de mapas universitarios"><div class="orbit"></div><div class="phone"><div class="phone-screen"><div class="phone-top"><span>9:41</span><span>● ● ▰</span></div><div class="phone-title">¡Hola, estudiante! 👋</div><div class="searchbox">⌕ &nbsp; ¿Qué espacio buscas?</div><div class="mini-map"><div class="building b1"></div><div class="building b2"></div><div class="building b3"></div><div class="building b4"></div><div class="route"></div><div class="pin"></div></div><div class="phone-bottom"><div class="destination-icon">⌖</div><div><strong>Tu próximo destino</strong><small>Encuentra espacios del campus</small></div></div></div></div>
+<div class="float-card float-one"><div class="float-icon">📍</div><div><strong>Encuentra tu destino</strong><small>Todo más fácil, paso a paso</small></div></div>
+<div class="float-card float-two"><div class="float-icon">⏱️</div><div><strong>Gana tiempo</strong><small>Menos vueltas, más enfoque</small></div></div>
+</div></div></section>
+<section class="features" id="beneficios"><div class="container"><div class="section-head"><div class="kicker">Una experiencia más simple</div><h2>Tu universidad, sin tantas vueltas</h2><p>Una propuesta creada para que encontrar los espacios universitarios sea más fácil, especialmente durante tus primeros días de clases.</p></div>
+<div class="feature-grid"><article class="feature-card"><div class="feature-icon">🧭</div><h3>Orientación clara</h3><p>Identifica aulas, laboratorios, oficinas y otros puntos importantes del campus desde una experiencia visual sencilla.</p></article><article class="feature-card"><div class="feature-icon">⏱️</div><h3>Más tiempo para ti</h3><p>Reduce el tiempo que dedicas a buscar espacios y concéntrate en tus clases y actividades universitarias.</p></article><article class="feature-card"><div class="feature-icon">🎒</div><h3>Ideal para ingresantes</h3><p>Familiarízate con el campus con mayor confianza y empieza tu vida universitaria con una ayuda extra.</p></article></div></div></section>
+<section class="demo" id="demo"><div class="container demo-grid"><div class="demo-copy"><div class="kicker">Explora un ejemplo</div><h2>¿Qué necesitas encontrar?</h2><p>Prueba esta pequeña demostración conceptual. Elige un espacio para ver cómo podría ayudarte ¡Ubícate! UPN a orientarte.</p><p><strong>Nota:</strong> esta demostración es ilustrativa; no representa un mapa oficial ni rutas verificadas de los campus UPN.</p></div>
+<div class="demo-panel"><label for="place-search">Busca un espacio universitario</label><div class="search-row"><input id="place-search" type="search" placeholder="Ej. biblioteca, laboratorio…" autocomplete="off"><button id="search-btn">Buscar</button></div><div class="place-list" id="place-list"><button class="place" data-place="Aulas"><span class="picon">🏫</span><span><strong>Aulas</strong><small>Encuentra tu salón</small></span></button><button class="place" data-place="Biblioteca"><span class="picon">📚</span><span><strong>Biblioteca</strong><small>Espacio de estudio</small></span></button><button class="place" data-place="Laboratorios"><span class="picon">🧪</span><span><strong>Laboratorios</strong><small>Áreas de práctica</small></span></button><button class="place" data-place="Oficinas administrativas"><span class="picon">🏢</span><span><strong>Oficinas</strong><small>Gestiones y consultas</small></span></button></div><div class="route-result" id="route-result" aria-live="polite">Selecciona un espacio para ver un ejemplo de orientación.</div></div></div></section>
+<section id="pasos"><div class="container"><div class="section-head"><div class="kicker">Nuestra propuesta</div><h2>Orientarte podría ser así de fácil</h2><p>La idea es reunir información útil en una experiencia clara y accesible para la comunidad universitaria.</p></div><div class="steps-grid"><article class="step"><div class="step-num">1</div><h3>Busca el lugar</h3><p>Escribe el nombre del aula, servicio u oficina que necesitas encontrar.</p></article><article class="step"><div class="step-num">2</div><h3>Consulta la información</h3><p>Revisa la ubicación y los datos disponibles del espacio dentro del campus.</p></article><article class="step"><div class="step-num">3</div><h3>Muévete con más confianza</h3><p>Usa la orientación como apoyo para llegar a tu destino y aprovechar mejor tu tiempo.</p></article></div></div></section>
+<section class="cta"><div class="container cta-inner"><div><h2>Tu campus puede sentirse más cerca.</h2><p>Conoce la propuesta ¡Ubícate! UPN y ayúdanos a imaginar una mejor experiencia universitaria.</p></div><button class="btn" data-open-modal>Me interesa la propuesta <span>→</span></button></div></section>
+</main>
+<footer><div class="container footer-inner"><div><div class="footer-brand">⌖ ¡Ubícate! UPN</div><div>Una propuesta estudiantil de orientación universitaria.</div></div><div>Proyecto conceptual · No es un servicio oficial de la UPN.</div></div></footer>
+</div>
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal"><h3 id="modal-title">¡Gracias por tu interés! 👋</h3><p>Esta página presenta una propuesta en desarrollo. Puedes dejar un dato de contacto de prueba para visualizar cómo funcionaría una lista de interés; no se enviará ni almacenará información.</p><label for="contact">Correo electrónico (opcional)</label><input id="contact" type="email" placeholder="tu@correo.com"><div class="modal-actions"><button class="btn btn-secondary" id="close-modal">Cerrar</button><button class="btn btn-primary" id="submit-interest">Listo</button></div><p id="modal-feedback" aria-live="polite" style="margin-bottom:0;font-size:.82rem"></p></div></div>
+<script>
+const placeMessages = {
+  "Aulas": "Ejemplo de resultado: consulta el pabellón y el número de aula. La ubicación exacta dependería de contar con un plano oficial actualizado.",
+  "Biblioteca": "Ejemplo de resultado: revisa la ubicación de la biblioteca y la información disponible antes de dirigirte allí.",
+  "Laboratorios": "Ejemplo de resultado: identifica el laboratorio que necesitas y consulta su ubicación en el campus correspondiente.",
+  "Oficinas administrativas": "Ejemplo de resultado: encuentra información de referencia para ubicar oficinas y realizar tus gestiones."
+};
+const result = document.getElementById('route-result');
+function choosePlace(name) {
+  const key = Object.keys(placeMessages).find(k => k.toLowerCase() === name.toLowerCase() || k.toLowerCase().includes(name.toLowerCase()));
+  document.querySelectorAll('.place').forEach(btn => btn.classList.toggle('active', btn.dataset.place === key));
+  if (key) { result.textContent = placeMessages[key]; }
+  else { result.textContent = 'No encontramos ese ejemplo. Prueba con aulas, biblioteca, laboratorios u oficinas.'; }
+}
+document.querySelectorAll('.place').forEach(btn => btn.addEventListener('click', () => { document.getElementById('place-search').value = btn.dataset.place; choosePlace(btn.dataset.place); }));
+document.getElementById('search-btn').addEventListener('click', () => choosePlace(document.getElementById('place-search').value.trim()));
+document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') choosePlace(e.currentTarget.value.trim()); });
+const modal = document.getElementById('modal');
+document.querySelectorAll('[data-open-modal]').forEach(btn => btn.addEventListener('click', () => { modal.classList.add('open'); document.getElementById('modal-feedback').textContent = ''; }));
+document.getElementById('close-modal').addEventListener('click', () => modal.classList.remove('open'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+document.getElementById('submit-interest').addEventListener('click', () => { document.getElementById('modal-feedback').textContent = '¡Listo! Gracias por explorar esta propuesta. Este formulario es solo una demostración y no envía datos.'; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+</script>
+</body>
+</html>
